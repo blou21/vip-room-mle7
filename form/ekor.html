@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+}
+
+.container {
+    max-width: 400px;
+}
+
+.bounce-img {
+    width: 120px;
+    animation: bounce 1.5s infinite;
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+h2 {
+    margin-top: 20px;
+    font-size: 22px;
+}
+
+#countdown {
+    font-size: 18px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #00ffcc;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <img src="../form/hot52pro.jpg" 
+         class="bounce-img" 
+         alt="Loading">
+
+    <h2>Mohon tunggu 15 menit...</h2>
+    <div id="countdown">15:00</div>
+</div>
+
+<script>
+// 15 menit = 900 detik
+let timeLeft = 900;
+const countdownElement = document.getElementById("countdown");
+
+const timer = setInterval(() => {
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    countdownElement.textContent = `${minutes}:${seconds}`;
+
+    if (timeLeft <= 0) {
+        clearInterval(timer);
+        countdownElement.textContent = "Selesai!";
+    }
+
+    timeLeft--;
+}, 1000);
+</script>
+
+</body>
+</html>
